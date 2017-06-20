@@ -10,6 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-26 15:46+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Jason <chairco@gmail.com>, 2017\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/django-channels-tw-docs/teams/72101/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,17 +20,17 @@ msgstr ""
 
 #: ../../asgi.rst:3
 msgid "ASGI (Asynchronous Server Gateway Interface) Draft Spec"
-msgstr ""
+msgstr "ASGI (異步伺服器閘道介面) 規劃草案"
 
 #: ../../asgi.rst:5
 msgid ""
 "**NOTE: This is still in-progress, and may change substantially as "
 "development progresses.**"
-msgstr ""
+msgstr "**提醒：這部分仍在進行中，可能會依發展狀況有所變動。**"
 
 #: ../../asgi.rst:9
 msgid "Abstract"
-msgstr ""
+msgstr "摘要"
 
 #: ../../asgi.rst:11
 msgid ""
@@ -38,6 +39,8 @@ msgid ""
 "handling of multiple common protocol styles (including HTTP, HTTP2, and "
 "WebSocket)."
 msgstr ""
+"此文件提供一個標準介面連結網路伺服器 (特別是 web 伺服器) 和 Python 應用程式，允許處理多種常見的協議樣式(包括 HTTP，HTTP2 和"
+" WebSocket )。"
 
 #: ../../asgi.rst:16
 msgid ""
@@ -48,7 +51,7 @@ msgstr ""
 
 #: ../../asgi.rst:22
 msgid "Rationale"
-msgstr ""
+msgstr "說明"
 
 #: ../../asgi.rst:24
 msgid ""
@@ -80,10 +83,12 @@ msgid ""
 "WSGI servers and applications, as a large majority of Python web usage "
 "relies on WSGI and providing an easy path forwards is critical to adoption."
 msgstr ""
+"此設計的一部分是確保有一個簡單的路徑來使用現有的 WSGI 服務器和應用程式，因為大多數的 Python Web 使用依賴於 WSGI "
+"並提供一個簡單的路徑轉發是採用的關鍵。"
 
 #: ../../asgi.rst:47
 msgid "Overview"
-msgstr ""
+msgstr "總覽"
 
 #: ../../asgi.rst:49
 msgid ""
@@ -142,7 +147,7 @@ msgstr ""
 
 #: ../../asgi.rst:87
 msgid "Channels and Messages"
-msgstr ""
+msgstr "路徑與訊息"
 
 #: ../../asgi.rst:89
 msgid ""
@@ -153,19 +158,19 @@ msgstr ""
 
 #: ../../asgi.rst:93
 msgid "Byte strings"
-msgstr ""
+msgstr "Byte 字串"
 
 #: ../../asgi.rst:94
 msgid "Unicode strings"
-msgstr ""
+msgstr "Unicode 字串"
 
 #: ../../asgi.rst:95
 msgid "Integers (no longs)"
-msgstr ""
+msgstr "整數(無長整數)"
 
 #: ../../asgi.rst:96
 msgid "Lists (tuples should be treated as lists)"
-msgstr ""
+msgstr "列表(元組會被視為列表)"
 
 #: ../../asgi.rst:97
 msgid "Dicts (keys must be unicode strings)"
@@ -177,7 +182,7 @@ msgstr ""
 
 #: ../../asgi.rst:99
 msgid "None"
-msgstr ""
+msgstr "None"
 
 #: ../../asgi.rst:101
 msgid ""
@@ -205,6 +210,9 @@ msgid ""
 "channels* (such as a ``http.response!ABCDEF`` channel tied to a client "
 "socket)."
 msgstr ""
+"為了輔助縮放和網頁架構，在具有多個讀取器的通道之間進行區分(例如，web 應用將從每個應用工作進程監聽的 ``http.reques`` "
+"通道)，*單讀取器通道* 從一個未知位置讀取(例如 ``http.request.body？ABCDEF`` )， 和 *進程特定的通道* "
+"(例如綁定到客戶端的``http.response！ABCDEF`` 通道插座)。"
 
 #: ../../asgi.rst:119
 msgid ""
@@ -264,7 +272,7 @@ msgstr ""
 
 #: ../../asgi.rst:161
 msgid "Handling Protocols"
-msgstr ""
+msgstr "處理協議"
 
 #: ../../asgi.rst:163
 msgid ""
@@ -325,7 +333,7 @@ msgstr ""
 
 #: ../../asgi.rst:204
 msgid "The extensions defined here are:"
-msgstr ""
+msgstr "此處擴充定義為:"
 
 #: ../../asgi.rst:206
 msgid ""
@@ -419,7 +427,7 @@ msgstr ""
 
 #: ../../asgi.rst:258
 msgid "Linearization"
-msgstr ""
+msgstr "線性化"
 
 #: ../../asgi.rst:260
 msgid ""
@@ -427,6 +435,7 @@ msgid ""
 "messages can be handled by any one of a set of threads, processes or "
 "machines running application code."
 msgstr ""
+"ASGI 的設計目的為在實現無共享架構下，其中訊息可以藉由一組 threads，processes 或機器其中的任何一個來處理運行的應用程序代碼。"
 
 #: ../../asgi.rst:264
 msgid ""
@@ -462,7 +471,7 @@ msgstr ""
 
 #: ../../asgi.rst:286
 msgid "Capacity"
-msgstr ""
+msgstr "容量"
 
 #: ../../asgi.rst:288
 msgid ""
@@ -491,13 +500,13 @@ msgstr ""
 
 #: ../../asgi.rst:306
 msgid "Specification Details"
-msgstr ""
+msgstr "規格明細"
 
 #: ../../asgi.rst:308
 msgid ""
 "A *channel layer* must provide an object with these attributes (all function"
 " arguments are positional):"
-msgstr ""
+msgstr "一個 *路徑圖層* 必須有個物件具有這些屬性(所有函數參數都有方位性)："
 
 #: ../../asgi.rst:311
 msgid ""
@@ -594,7 +603,7 @@ msgstr ""
 #: ../../asgi.rst:368
 msgid ""
 "A channel layer implementing the ``statistics`` extension must also provide:"
-msgstr ""
+msgstr "路徑層架構的 ``統計`` 擴充功能需具備："
 
 #: ../../asgi.rst:370
 msgid ""
@@ -649,7 +658,7 @@ msgstr ""
 
 #: ../../asgi.rst:382
 msgid "Implementation may provide total counts, counts per seconds or both."
-msgstr ""
+msgstr "執行可提供次數總和、每秒次數，或是兩者皆提供。"
 
 #: ../../asgi.rst:385
 msgid ""
@@ -692,7 +701,7 @@ msgstr ""
 
 #: ../../asgi.rst:407
 msgid "Channel Semantics"
-msgstr ""
+msgstr "Channel 語義"
 
 #: ../../asgi.rst:409
 msgid "Channels **must**:"
@@ -706,7 +715,7 @@ msgstr ""
 
 #: ../../asgi.rst:414
 msgid "Never deliver a message more than once."
-msgstr ""
+msgstr "請勿重覆傳送相同訊息超過一次。"
 
 #: ../../asgi.rst:416
 msgid ""
@@ -723,7 +732,7 @@ msgstr ""
 
 #: ../../asgi.rst:423
 msgid "Have a maximum name length of at least 100 bytes."
-msgstr ""
+msgstr "最長名稱的長度為 100 bytes。"
 
 #: ../../asgi.rst:425
 msgid ""
@@ -807,7 +816,7 @@ msgstr ""
 
 #: ../../asgi.rst:477
 msgid "Message Formats"
-msgstr ""
+msgstr "訊息格式"
 
 #: ../../asgi.rst:479
 msgid ""
@@ -1029,7 +1038,7 @@ msgstr ""
 
 #: ../../asgi.rst:613
 msgid "Response"
-msgstr ""
+msgstr "回應"
 
 #: ../../asgi.rst:615
 msgid ""
@@ -1132,7 +1141,7 @@ msgstr ""
 
 #: ../../asgi.rst:695
 msgid "Disconnect"
-msgstr ""
+msgstr "取消連結"
 
 #: ../../asgi.rst:697
 msgid ""
@@ -1185,7 +1194,7 @@ msgstr ""
 
 #: ../../asgi.rst:733
 msgid "Connection"
-msgstr ""
+msgstr "連結"
 
 #: ../../asgi.rst:735
 msgid ""
@@ -1251,11 +1260,11 @@ msgstr ""
 
 #: ../../asgi.rst:781
 msgid "``order``: The integer value ``0``."
-msgstr ""
+msgstr "``order``: 整數值為 ``0``。"
 
 #: ../../asgi.rst:785
 msgid "Receive"
-msgstr ""
+msgstr "接收"
 
 #: ../../asgi.rst:787
 msgid ""
@@ -1302,7 +1311,7 @@ msgstr ""
 
 #: ../../asgi.rst:810
 msgid "Disconnection"
-msgstr ""
+msgstr "無法連接"
 
 #: ../../asgi.rst:812
 msgid ""
@@ -1358,7 +1367,7 @@ msgstr ""
 
 #: ../../asgi.rst:846
 msgid "If ``accept`` is ``True``, accept the connection and do nothing else."
-msgstr ""
+msgstr "如果 ``accept`` 是 ``True``，接受連接，然後不做任何事情。"
 
 #: ../../asgi.rst:847
 msgid ""
@@ -1369,7 +1378,7 @@ msgstr ""
 
 #: ../../asgi.rst:851
 msgid "If received while the connection is established:"
-msgstr ""
+msgstr "如果在建立連接時接收到:"
 
 #: ../../asgi.rst:853
 msgid "If ``bytes`` or ``text`` is present, send the data."
@@ -1383,7 +1392,7 @@ msgstr ""
 
 #: ../../asgi.rst:856
 msgid "``accept`` is ignored."
-msgstr ""
+msgstr "``accept`` 是被忽略的。"
 
 #: ../../asgi.rst:858
 msgid "Channel: ``websocket.send!``"
@@ -1417,11 +1426,11 @@ msgstr ""
 msgid ""
 "A maximum of one of ``bytes`` or ``text`` may be provided. If both are "
 "provided, the protocol server should ignore the message entirely."
-msgstr ""
+msgstr "最多可以提供一個 ``bytes`` 或 ``text``。若同時提供兩者，伺服器應該會忽略該訊息。"
 
 #: ../../asgi.rst:879
 msgid "Protocol Format Guidelines"
-msgstr ""
+msgstr "協議格式指南"
 
 #: ../../asgi.rst:881
 msgid ""
@@ -1468,7 +1477,7 @@ msgstr ""
 
 #: ../../asgi.rst:908
 msgid "Approximate Global Ordering"
-msgstr ""
+msgstr "近似於全球訂購"
 
 #: ../../asgi.rst:910
 msgid ""
@@ -1504,7 +1513,7 @@ msgstr ""
 
 #: ../../asgi.rst:931
 msgid "Strings and Unicode"
-msgstr ""
+msgstr "字串和 Unicode"
 
 #: ../../asgi.rst:933
 msgid ""
@@ -1513,6 +1522,8 @@ msgid ""
 "underlying implementation, then any values should be kept within the lower "
 "8-byte range."
 msgstr ""
+"在此文件中，*byte string*是指Python 2上的“str”和Python "
+"3上的“bytes”。如果由於底層實現，此類型仍然支持Unicode編輯碼，則任何值都應該在低於8個字元範圍。"
 
 #: ../../asgi.rst:938
 msgid ""
@@ -1520,6 +1531,8 @@ msgid ""
 "This document will never specify just *string* - all strings are one of the "
 "two types."
 msgstr ""
+"* Unicode字串*是指Python 2上的“unicode”和Python 3上的“str”。這個文件永遠不會只指定* string * - "
+"所有的字串都是兩種類型的其中之一。"
 
 #: ../../asgi.rst:942
 msgid ""
@@ -1533,39 +1546,39 @@ msgstr ""
 msgid ""
 "Channel and group names are always unicode strings, with the additional "
 "limitation that they only use the following characters:"
-msgstr ""
+msgstr "路徑和群組名稱皆為Unicode字串，且額外限制只使用以下文字："
 
 #: ../../asgi.rst:950
 msgid "ASCII letters"
-msgstr ""
+msgstr "ASCII字母"
 
 #: ../../asgi.rst:951
 msgid "The digits ``0`` through ``9``"
-msgstr ""
+msgstr "字元從\"0\"到\"9\""
 
 #: ../../asgi.rst:952
 msgid "Hyphen ``-``"
-msgstr ""
+msgstr "連字號\"-\""
 
 #: ../../asgi.rst:953
 msgid "Underscore ``_``"
-msgstr ""
+msgstr "底線\"_\""
 
 #: ../../asgi.rst:954
 msgid "Period ``.``"
-msgstr ""
+msgstr "句號\".\""
 
 #: ../../asgi.rst:955
 msgid ""
 "Question mark ``?`` (only to delineiate single-reader channel names, and "
 "only one per name)"
-msgstr ""
+msgstr "問號\"?\"(僅限於單讀者路徑名稱，且每個名稱限用一次)"
 
 #: ../../asgi.rst:957
 msgid ""
 "Exclamation mark ``!`` (only to delineate process-specific channel names, "
 "and only one per name)"
-msgstr ""
+msgstr "驚嘆號\"!\"(僅描述特定於進行中的路徑名稱，且每個名稱限用一次)"
 
 #: ../../asgi.rst:962
 msgid "WSGI Compatibility"
@@ -1613,11 +1626,11 @@ msgstr ""
 
 #: ../../asgi.rst:990
 msgid "``REQUEST_METHOD`` is the ``method`` key"
-msgstr ""
+msgstr "\"REQUEST_METHOD\"是\"功能\"鍵"
 
 #: ../../asgi.rst:991
 msgid "``SCRIPT_NAME`` is ``root_path``"
-msgstr ""
+msgstr "\"SCRIPT_NAME\"是\"脈絡路徑\""
 
 #: ../../asgi.rst:992
 msgid "``PATH_INFO`` can be derived from ``path`` and ``root_path``"
@@ -1682,7 +1695,7 @@ msgstr ""
 
 #: ../../asgi.rst:1015
 msgid "Common Questions"
-msgstr ""
+msgstr "常見問題"
 
 #: ../../asgi.rst:1017
 msgid "Why are messages ``dicts``, rather than a more advanced type?"
@@ -1695,6 +1708,7 @@ msgid ""
 "frameworks to wrap each protocol-specific set of messages in custom classes "
 "(e.g. ``http.request`` messages become ``Request`` objects)"
 msgstr ""
+"我們希望訊息方便編輯，特別在切換流程和機器介面，所以最好是一個簡單可編輯的類型。我們期望架構將包含每個特定協議訊息在各自定義類中(例如`http.request`訊息變`Request'物件)"
 
 #: ../../asgi.rst:1026
 msgid "TODOs"
@@ -1703,7 +1717,7 @@ msgstr ""
 #: ../../asgi.rst:1028
 msgid ""
 "Maybe remove ``http_version`` and replace with ``supports_server_push``?"
-msgstr ""
+msgstr "可移除``http_version``並換成`supports_server_push``?"
 
 #: ../../asgi.rst:1030
 msgid ""
@@ -1726,11 +1740,11 @@ msgstr ""
 
 #: ../../asgi.rst:1042
 msgid "Copyright"
-msgstr ""
+msgstr "版權"
 
 #: ../../asgi.rst:1044
 msgid "This document has been placed in the public domain."
-msgstr ""
+msgstr "此文件已放於公有領域"
 
 #: ../../asgi.rst:1048
 msgid "Protocol Definitions"
