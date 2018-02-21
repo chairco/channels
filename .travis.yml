@@ -3,29 +3,36 @@ sudo: false
 language: python
 
 python:
-  - "2.7"
-  - "3.4"
   - "3.5"
   - "3.6"
 
 env:
-  - DJANGO="Django>=1.8,<1.9"
-  - DJANGO="Django>=1.9,<1.10"
-  - DJANGO="Django>=1.10,<1.11"
   - DJANGO="Django>=1.11,<2.0"
-
-cache:
-  directories:
-  - $HOME/.cache/pip/wheels
+  - DJANGO="Django>=2.0,<2.1"
 
 install:
   - nvm install 7
-  - pip install -U pip wheel setuptools
+  - pip install -U pip wheel setuptools flake8 isort unify
   - pip install $DJANGO -e .[tests]
   - pip freeze
 
 script:
-  - python runtests.py
-#  - cd js_client && npm install --progress=false && npm test && cd ..
+  - pytest
   - flake8
-  - isort --check-only --recursive channels
+  - isort --check-only --diff --recursive channels tests
+  - unify --check-only --recursive --quote \" channels tests
+
+jobs:
+  include:
+    #- stage: test_js
+    #  script: cd js_client && npm install --progress=false && npm test && cd ..
+    - stage: release
+      script: skip
+      deploy:
+        provider: pypi
+        user: andrewgodwin_bot
+        on:
+          tags: true
+        distributions: sdist bdist_wheel
+        password:
+          secure: JQrDaSHhyrQZE4FFzGF2WDWIVlZOXP9xoGtrXSaSp+neWpr2a83UmAjEQYGFLX5aXvVBpaILL5fOfMnbnIBzArEC01RTTWm1iDuQkpvYU6DgbTsLnCl5g9V+Z3G+8tGSy3lGhFiViLBIi5Xi6PrwlBeK/LW1b9Ja8jsZdLWYHloFtyy5HkYodFOxYdpiXLeva9YXWKPnU9lKLLrubcRtbnvyAn9WY2Wn09Cy/6xcGqX0lPebf3gaXYMFQ9thDoZPgSqrxYYK57LA0EdMjSyxrs5GVGSVoNhnsAJn6JFzHwvGeuzjs/92bNUAcTM+oe6cZWHPiECgINKNFLTxH9x0sNanw2walNnw+9X9caqYnzrReiwKJoTiXd3fZSgFV5WplVMARw9kSvSnNclzTiToTNXrRmL5ATMgv5qixRctoDRaYgz/6i1mGt7ey5qyq0qEViBb9hB2NBwF3kVbJG8evdXqw8bcBQ1OCfXKLV0cWvRpdbjZ6hdCcJPgptztyGnlGwX8/eeAxrCYkQy8FmOmEV8c00mMUaoRfDqXxtqyii2UdwRL10Du6V47jjYxCGXN5bfMGXVi/xNdmw1gbZx5fhf5rMhGvux9mxGZVtU4Q7I5jEhQ/H+IwaoEjUA7e5qDfWB+hqMhnsineQb12ZZ//iKVo2x2eTTn6yJ0hVn8QP4=
