@@ -50,7 +50,11 @@ ApplicationCommunicator
 -----------------------
 
 ``ApplicationCommunicator`` is the generic test helper for any ASGI application.
-It gives you two basic methods - one to send events and one to receive events.
+It provides several basic methods for interaction as explained below.
+
+You should only need this generic class for non-HTTP/WebSocket tests, though
+you might need to fall back to it if you are testing things like HTTP chunked
+responses or long-polling, which aren't supported in ``HttpCommunicator`` yet.
 
 .. note::
     ``ApplicationCommunicator`` is actually provided by the base ``asgiref``
@@ -61,21 +65,57 @@ To construct it, pass it an application and a scope::
     from channels.testing import ApplicationCommunicator
     communicator = ApplicationCommunicator(MyConsumer, {"type": "http", ...})
 
-To send an event, call ``send_input``::
+send_input
+~~~~~~~~~~
+
+Call it to send an event to the application::
 
     await communicator.send_input({
         "type": "http.request",
         "body": b"chunk one \x01 chunk two",
     })
 
-To receive an event, call ``receive_output``::
+receive_output
+~~~~~~~~~~~~~~
+
+Call it to receive an event from the application::
 
     event = await communicator.receive_output(timeout=1)
     assert event["type"] == "http.response.start"
 
-To wait for an application to exit (you'll need to either do this or wait for
-it to send you output before you can see what it did using mocks or inspection),
-use ``wait``::
+.. _application_communicator-receive_nothing:
+
+receive_nothing
+~~~~~~~~~~~~~~~
+
+Call it to check that there is no event waiting to be received from the
+application::
+
+    assert await communicator.receive_nothing(timeout=0.1, interval=0.01) is False
+    # Receive the rest of the http request from above
+    event = await communicator.receive_output()
+    assert event["type"] == "http.response.body"
+    assert event.get("more_body") is True
+    event = await communicator.receive_output()
+    assert event["type"] == "http.response.body"
+    assert event.get("more_body") is None
+    # Check that there isn't another event
+    assert await communicator.receive_nothing() is True
+    # You could continue to send and receive events
+    # await communicator.send_input(...)
+
+The method has two optional parameters:
+
+* ``timeout``: number of seconds to wait to ensure the queue is empty. Defaults
+  to 0.1.
+* ``interval``: number of seconds to wait for another check for new events.
+  Defaults to 0.01.
+
+wait
+~~~~
+
+Call it to wait for an application to exit (you'll need to either do this or wait for
+it to send you output before you can see what it did using mocks or inspection)::
 
     await communicator.wait(timeout=1)
 
@@ -84,10 +124,6 @@ around ``wait``::
 
     with pytest.raises(ValueError):
         await communicator.wait()
-
-You should only need this generic class for non-HTTP/WebSocket tests, though
-you might need to fall back to it if you are testing things like HTTP chunked
-responses or long-polling, which aren't supported in ``HttpCommunicator`` yet.
 
 
 HttpCommunicator
@@ -149,7 +185,8 @@ application, as shown in this example::
     If you don't call ``WebsocketCommunicator.disconnect()`` before your test
     suite ends, you may find yourself getting ``RuntimeWarnings`` about
     things never being awaited, as you will be killing your app off in the
-    middle of its lifecycle.
+    middle of its lifecycle. You do not, however, have to ``disconnect()`` if
+    your app already raised an error.
 
 connect
 ~~~~~~~
@@ -206,10 +243,21 @@ Receives a text frame from the application and decodes it for you::
 Takes an optional ``timeout`` argument with a number of seconds to wait before
 timing out, which defaults to 1.
 
+receive_nothing
+~~~~~~~~~~~~~~~
+
+Checks that there is no frame waiting to be received from the application. For
+details see
+:ref:`ApplicationCommunicator <application_communicator-receive_nothing>`.
+
 disconnect
 ~~~~~~~~~~
 
 Closes the socket from the client side. Takes nothing and returns nothing.
+
+You do not need to call this if the application instance you're testing already
+exited (for example, if it errored), but if you do call it, it will just
+silently return control to you.
 
 
 ChannelsLiveServerTestCase
@@ -226,6 +274,22 @@ standard Django ``LiveServerTestCase``::
 
         def test_live_stuff(self):
             call_external_testing_thing(self.live_server_url)
+
+.. note::
+
+    You can't use an in-memory database for your live tests. Therefore
+    include a test database file name in your settings to tell Django to
+    use a file database if you use SQLite::
+
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+                "TEST": {
+                    "NAME": os.path.join(BASE_DIR, "db_test.sqlite3"),
+                },
+            },
+        }
 
 serve_static
 ~~~~~~~~~~~~

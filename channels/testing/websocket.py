@@ -1,4 +1,5 @@
 import json
+from urllib.parse import unquote, urlparse
 
 from asgiref.testing import ApplicationCommunicator
 
@@ -12,9 +13,13 @@ class WebsocketCommunicator(ApplicationCommunicator):
     """
 
     def __init__(self, application, path, headers=None, subprotocols=None):
+        if not isinstance(path, str):
+            raise TypeError("Expected str, got {}".format(type(path)))
+        parsed = urlparse(path)
         self.scope = {
             "type": "websocket",
-            "path": path,
+            "path": unquote(parsed.path),
+            "query_string": parsed.query.encode("utf-8"),
             "headers": headers or [],
             "subprotocols": subprotocols or [],
         }
@@ -89,7 +94,7 @@ class WebsocketCommunicator(ApplicationCommunicator):
         assert isinstance(payload, str), "JSON data is not a text frame"
         return json.loads(payload)
 
-    async def disconnect(self, code=1000):
+    async def disconnect(self, code=1000, timeout=1):
         """
         Closes the socket
         """
@@ -97,4 +102,4 @@ class WebsocketCommunicator(ApplicationCommunicator):
             "type": "websocket.disconnect",
             "code": code,
         })
-        await self.future
+        await self.wait(timeout)

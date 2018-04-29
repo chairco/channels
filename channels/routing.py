@@ -8,6 +8,11 @@ from django.urls.exceptions import Resolver404
 
 from channels.http import AsgiHandler
 
+try:
+    from django.urls.resolvers import URLResolver
+except ImportError:  # Django 1.11
+    from django.urls import RegexURLResolver as URLResolver
+
 
 """
 All Routing instances inside this file are also valid ASGI applications - with
@@ -53,6 +58,25 @@ class ProtocolTypeRouter:
             raise ValueError("No application configured for scope type %r" % scope["type"])
 
 
+def route_pattern_match(route, path):
+    """
+    Backport of RegexPattern.match for Django versions before 2.0. Returns
+    the remaining path and positional and keyword arguments matched.
+    """
+    if hasattr(route, "pattern"):
+        return route.pattern.match(path)
+    # Django<2.0. No converters... :-(
+    match = route.regex.search(path)
+    if match:
+        # If there are any named groups, use those as kwargs, ignoring
+        # non-named groups. Otherwise, pass all non-named arguments as
+        # positional arguments.
+        kwargs = match.groupdict()
+        args = () if kwargs else match.groups()
+        return path[match.end():], args, kwargs
+    return None
+
+
 class URLRouter:
     """
     Routes to different applications/consumers based on the URL path.
@@ -62,12 +86,31 @@ class URLRouter:
     url() or path().
     """
 
+    #: This router wants to do routing based on scope[path] or
+    #: scope[path_remaining]. ``path()`` entries in URLRouter should not be
+    #: treated as endpoints (ended with ``$``), but similar to ``include()``.
+    _path_routing = True
+
     def __init__(self, routes):
         self.routes = routes
+        # Django 2 introduced path(); older routes have no "pattern" attribute
+        if self.routes and hasattr(self.routes[0], "pattern"):
+            for route in self.routes:
+                # The inner ASGI app wants to do additional routing, route
+                # must not be an endpoint
+                if getattr(route.callback, "_path_routing", False) is True:
+                    route.pattern._is_endpoint = False
+
+        for route in self.routes:
+            if not route.callback and isinstance(route, URLResolver):
+                raise ImproperlyConfigured(
+                    "%s: include() is not supported in URLRouter. Use nested"
+                    " URLRouter instances instead." % (route,)
+                )
 
     def __call__(self, scope):
         # Get the path
-        path = scope.get("path", None)
+        path = scope.get("path_remaining", scope.get("path", None))
         if path is None:
             raise ValueError("No 'path' key in connection scope, cannot route URLs")
         # Remove leading / to match Django's handling
@@ -75,17 +118,25 @@ class URLRouter:
         # Run through the routes we have until one matches
         for route in self.routes:
             try:
-                match = route.resolve(path)
-                if match is not None:
+                match = route_pattern_match(route, path)
+                if match:
+                    new_path, args, kwargs = match
                     # Add args or kwargs into the scope
-                    scope["url_route"] = {
-                        "args": match.args,
-                        "kwargs": match.kwargs,
-                    }
-                    return match.func(scope)
+                    outer = scope.get("url_route", {})
+                    return route.callback(dict(
+                        scope,
+                        path_remaining=new_path,
+                        url_route={
+                            "args": outer.get("args", ()) + args,
+                            "kwargs": {**outer.get("kwargs", {}), **kwargs},
+                        },
+                    ))
             except Resolver404 as e:
                 pass
         else:
+            if "path_remaining" in scope:
+                raise Resolver404("No route found for path %r." % path)
+            # We are the outermost URLRouter
             raise ValueError("No route found for path %r." % path)
 
 

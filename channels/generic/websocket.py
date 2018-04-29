@@ -11,7 +11,13 @@ class WebsocketConsumer(SyncConsumer):
     Base WebSocket consumer. Provides a general encapsulation for the
     WebSocket handling model that other applications can build on.
     """
-    groups = []
+
+    groups = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.groups is None:
+            self.groups = []
 
     def websocket_connect(self, message):
         """
@@ -32,11 +38,11 @@ class WebsocketConsumer(SyncConsumer):
     def connect(self):
         self.accept()
 
-    def accept(self):
+    def accept(self, subprotocol=None):
         """
         Accepts an incoming socket
         """
-        super().send({"type": "websocket.accept"})
+        super().send({"type": "websocket.accept", "subprotocol": subprotocol})
 
     def websocket_receive(self, message):
         """
@@ -146,7 +152,13 @@ class AsyncWebsocketConsumer(AsyncConsumer):
     Base WebSocket consumer, async version. Provides a general encapsulation
     for the WebSocket handling model that other applications can build on.
     """
-    groups = []
+
+    groups = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.groups is None:
+            self.groups = []
 
     async def websocket_connect(self, message):
         """
@@ -167,11 +179,11 @@ class AsyncWebsocketConsumer(AsyncConsumer):
     async def connect(self):
         await self.accept()
 
-    async def accept(self):
+    async def accept(self, subprotocol=None):
         """
         Accepts an incoming socket
         """
-        await super().send({"type": "websocket.accept"})
+        await super().send({"type": "websocket.accept", "subprotocol": subprotocol})
 
     async def websocket_receive(self, message):
         """

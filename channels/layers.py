@@ -9,6 +9,7 @@ import time
 from copy import deepcopy
 
 from django.conf import settings
+from django.core.signals import setting_changed
 from django.utils.module_loading import import_string
 
 from channels import DEFAULT_CHANNEL_LAYER
@@ -23,6 +24,14 @@ class ChannelLayerManager:
 
     def __init__(self):
         self.backends = {}
+        setting_changed.connect(self._reset_backends)
+
+    def _reset_backends(self, setting, **kwargs):
+        """
+        Removes cached channel layers when the CHANNEL_LAYERS setting changes.
+        """
+        if setting == "CHANNEL_LAYERS":
+            self.backends = {}
 
     @property
     def configs(self):
@@ -265,7 +274,7 @@ class InMemoryChannelLayer(BaseChannelLayer):
         # Group Expiration
         timeout = int(time.time()) - self.group_expiry
         for group in self.groups:
-            for channel in self.groups.get(group, set()):
+            for channel in list(self.groups.get(group, set())):
                 # If join time is older than group_expiry end the group membership
                 if self.groups[group][channel] and int(self.groups[group][channel]) < timeout:
                     # Delete from group

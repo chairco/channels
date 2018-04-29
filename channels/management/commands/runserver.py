@@ -5,9 +5,8 @@ from django.apps import apps
 from django.conf import settings
 from django.core.management import CommandError
 from django.core.management.commands.runserver import Command as RunserverCommand
-from django.utils import six
-from django.utils.encoding import get_system_encoding
 
+from channels import __version__
 from channels.log import setup_logger
 from channels.routing import get_default_application
 from daphne.endpoints import build_endpoint_description_strings
@@ -54,15 +53,15 @@ class Command(RunserverCommand):
         # Print helpful text
         quit_command = "CTRL-BREAK" if sys.platform == "win32" else "CONTROL-C"
         now = datetime.datetime.now().strftime("%B %d, %Y - %X")
-        if six.PY2:
-            now = now.decode(get_system_encoding())
         self.stdout.write(now)
         self.stdout.write((
             "Django version %(version)s, using settings %(settings)r\n"
-            "Starting ASGI/Channels development server at %(protocol)s://%(addr)s:%(port)s/\n"
+            "Starting ASGI/Channels version %(channels_version)s development server"
+            " at %(protocol)s://%(addr)s:%(port)s/\n"
             "Quit the server with %(quit_command)s.\n"
         ) % {
             "version": self.get_version(),
+            "channels_version": __version__,
             "settings": settings.SETTINGS_MODULE,
             "protocol": self.protocol,
             "addr": "[%s]" % self.addr if self._raw_ipv6 else self.addr,
@@ -83,7 +82,6 @@ class Command(RunserverCommand):
                 signal_handlers=not options["use_reloader"],
                 action_logger=self.log_action,
                 http_timeout=self.http_timeout,
-                ws_protocols=getattr(settings, "CHANNELS_WS_PROTOCOLS", None),
                 root_path=getattr(settings, "FORCE_SCRIPT_NAME", "") or "",
                 websocket_handshake_timeout=self.websocket_handshake_timeout,
             ).run()
